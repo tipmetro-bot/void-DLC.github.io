@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>voidDLC · личный кабинет</title>
+<style>
+  :root{--bg:#0d0e13;--bg2:#111218;--card:#161822;--widget:#1c1f2b;--hover:#222533;--border:#262a38;
+        --text:#e8eaf0;--dim:#8b90a2;--faint:#565b6e;--accent:#8b5cf6;--accent2:#a78bfa;
+        --on:#34d399;--warn:#fbbf24;--danger:#f87171}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:14.5px;line-height:1.6}
+  .topbar{border-bottom:1px solid var(--border);background:rgba(17,18,24,.9);position:sticky;top:0;z-index:5}
+  .top-in{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:14px;height:58px;padding:0 20px}
+  .logo{font-family:'Orbitron','Inter',sans-serif;font-weight:900;font-size:17px;color:#fff;text-decoration:none;letter-spacing:1px}
+  .logo span{color:var(--accent)}
+  .top-links{margin-left:auto;display:flex;gap:16px}
+  .top-links a{color:var(--dim);text-decoration:none;font-size:13px}
+  .top-links a:hover{color:#fff}
+  .wrap{max-width:860px;margin:0 auto;padding:30px 20px 60px}
+  h1{font-size:21px;margin-bottom:4px}
+  .sub{color:var(--faint);font-size:13px;margin-bottom:20px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .tab{cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:9px 16px;color:var(--dim);font-size:13.5px;transition:.2s;user-select:none}
+  .tab:hover{color:var(--text);border-color:var(--accent)}
+  .tab.act{color:#fff;border-color:var(--accent);background:rgba(139,92,246,.12)}
+  .pane{display:none}
+  .pane.act{display:block}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px}
+  .card h3{font-size:15px;margin-bottom:12px}
+  .row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+  .row input{flex:1;min-width:150px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--text);font-size:13.5px;outline:none}
+  .row input:focus{border-color:var(--accent)}
+  .btn{cursor:pointer;background:var(--accent);border:1px solid var(--accent);color:#fff;border-radius:8px;padding:9px 15px;font-size:13.5px}
+  .btn.gray{background:var(--widget);border-color:var(--border);color:var(--text)}
+  .msg{margin-top:10px;font-size:13px;min-height:20px}
+  .ok{color:var(--on)} .bad{color:var(--danger)} .dim{color:var(--dim)} .warn{color:var(--warn)}
+  .kv{display:grid;grid-template-columns:150px 1fr;gap:6px 12px;font-size:13.5px;margin-top:6px}
+  .kv .k{color:var(--faint)}
+  code{color:var(--accent2);font-size:13px;letter-spacing:.4px}
+  .hint{color:var(--dim);font-size:12.5px;margin-top:10px;line-height:1.6}
+  .order{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;margin-bottom:7px;font-size:13px;display:flex;gap:10px;flex-wrap:wrap}
+  .steps{margin:8px 0 0 18px;color:var(--dim);font-size:13px;line-height:1.8}
+  .steps b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="top-in">
+  <a class="logo" href="index.html">void<span>DLC</span></a>
+  <div class="top-links">
+    <a href="index.html">На главную</a>
+  </div>
+</div></div>
+
+<div class="wrap">
+  <h1>Личный кабинет</h1>
+  <div class="sub">Аккаунт, ключ, заказы — всё в одном месте. Данные хранятся в твоём браузере.</div>
+
+  <div class="tabs">
+    <div class="tab act" data-t="tAcc">Аккаунт</div>
+    <div class="tab" data-t="tKey">Мой ключ</div>
+    <div class="tab" data-t="tOrders">Заказы</div>
+    <div class="tab" data-t="tHelp">Помощь</div>
+  </div>
+
+  <!-- АККАУНТ -->
+  <div class="pane act" id="tAcc">
+    <div class="card">
+      <h3>Вход / регистрация</h3>
+      <div class="row"><input id="pEmail" placeholder="почта" autocomplete="off"></div>
+      <div class="row"><input id="pPass" type="password" placeholder="пароль"></div>
+      <div class="row">
+        <button class="btn" onclick="pRegister()">Регистрация</button>
+        <button class="btn gray" onclick="pLogin()">Войти</button>
+        <button class="btn gray" onclick="pLogout()">Выйти</button>
+      </div>
+      <div class="msg" id="pAccOut"></div>
+    </div>
+    <div class="card" id="pProfile" style="display:none">
+      <h3>Профиль</h3>
+      <div class="kv">
+        <div class="k">Почта</div><div id="pvEmail">—</div>
+        <div class="k">Ключ</div><div id="pvKey">—</div>
+        <div class="k">Кошелёк</div><div id="pvWallet">—</div>
+      </div>
+      <div class="row"><input id="pWallet" placeholder="TON-кошелёк UQ… / EQ…" autocomplete="off">
+        <button class="btn gray" onclick="pSaveWallet()">Привязать Tonkeeper</button></div>
+      <div class="msg" id="pWalletOut"></div>
+      <div class="hint">Кошелёк нужен, чтобы продавец видел, куда возвращать деньги при возврате, и связывал платежи с тобой.</div>
+    </div>
+  </div>
+
+  <!-- МОЙ КЛЮЧ -->
+  <div class="pane" id="tKey">
+    <div class="card">
+      <h3>Твой ключ</h3>
+      <div class="row"><input id="pKeyIn" placeholder="VOID-XXXX-XXXX-XXXX" autocomplete="off">
+        <button class="btn" onclick="pCheckKey()">Проверить</button>
+        <button class="btn gray" onclick="pSaveKey()">Сохранить в аккаунт</button></div>
+      <div class="msg" id="pKeyOut"></div>
+      <div class="hint">Проверка показывает тип ключа (25 дней / навсегда / 40 дней / 1 день / заморозка) и подлинность — по подписи партии, прямо в браузере.</div>
+    </div>
+    <div class="card">
+      <h3>Как активировать в моде</h3>
+      <div class="steps">
+        <b>1.</b> Запусти Minecraft с voidDLC и нажми <b>Right Shift</b><br>
+        <b>2.</b> Войди в аккаунт (та же почта и пароль, что здесь — пока мод хранит их локально на ПК)<br>
+        <b>3.</b> Откроется окно активации — вставь ключ и нажми <b>Активировать</b> (Enter)<br>
+        <b>4.</b> Готово: статус в шапке GUI покажет срок. Ключ привязывается к ПК (до 2 на один ключ)
+      </div>
+    </div>
+  </div>
+
+  <!-- ЗАКАЗЫ -->
+  <div class="pane" id="tOrders">
+    <div class="card">
+      <h3>Мои заказы</h3>
+      <div id="pOrderList"></div>
+      <div class="hint" id="pNoOrders">Заказ появляется здесь после нажатия «Я оплатил» на странице покупки. Если оплатил, а заказа нет — нажми кнопку ещё раз.</div>
+    </div>
+  </div>
+
+  <!-- ПОМОЩЬ -->
+  <div class="pane" id="tHelp">
+    <div class="card">
+      <h3>Частые вопросы</h3>
+      <div class="kv">
+        <div class="k">Триал</div><div>9 часов бесплатно с первого запуска GUI.</div>
+        <div class="k">Тарифы</div><div>25 дней — 3$ / 253.05 Р · навсегда — 6$ / 506.09 Р. Промокод <b>voidDLC</b> даёт −60%.</div>
+        <div class="k">Оплата</div><div>Tonkeeper: страница покупки откроет перевод с готовой суммой и комментарием. После оплаты жми «Я оплатил».</div>
+        <div class="k">Заморозка</div><div>Выиграл код заморозки в крутелке — введи его в поле активации: подписка встанет на паузу, дни не будут тикать. Разморозка — той же кнопкой.</div>
+        <div class="k">Бесплатно</div><div>5 ключей на 40 дней в разделе «Бесплатно» + ключи на 1 день в крутелке.</div>
+        <div class="k">ПК</div><div>Один ключ работает на 2 компьютерах. Перенёс ПК — просто активируй тот же код.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== общие утилиты (как на главной) ===== */
+function sha256(ascii){
+  function rr(v,a){return (v>>>a)|(v<<(32-a));}
+  var K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+         0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+         0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+         0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+         0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+         0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+         0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+         0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  var H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  var utf8=unescape(encodeURIComponent(ascii)), words=[], i;
+  for(i=0;i<utf8.length;i++) words[i>>2]=(words[i>>2]||0)|(utf8.charCodeAt(i)<<(24-(i%4)*8));
+  words[utf8.length>>2]=(words[utf8.length>>2]||0)|(0x80<<(24-(utf8.length%4)*8));
+  var nbit=Math.ceil((utf8.length+9)/64)*64, w=new Array(64);
+  words[nbit/4-1]=utf8.length*8;
+  for(var block=0;block<nbit/64;block++){
+    for(i=0;i<16;i++) w[i]=(words[block*16+i]||0);
+    for(i=16;i<64;i++){
+      var s0=rr(w[i-15],7)^rr(w[i-15],18)^(w[i-15]>>>3);
+      var s1=rr(w[i-2],17)^rr(w[i-2],19)^(w[i-2]>>>10);
+      w[i]=(w[i-16]+s0+w[i-7]+s1)|0;
+    }
+    var a=H[0],b=H[1],c=H[2],d=H[3],e=H[4],f=H[5],g=H[6],h=H[7];
+    for(i=0;i<64;i++){
+      var S1=rr(e,6)^rr(e,11)^rr(e,25), ch=(e&f)^(~e&g), t1=(h+S1+ch+K[i]+w[i])|0;
+      var S0=rr(a,2)^rr(a,13)^rr(a,22), mj=(a&b)^(a&c)^(b&c), t2=(S0+mj)|0;
+      h=g;g=f;f=e;e=(d+t1)|0;d=c;c=b;b=a;a=(t1+t2)|0;
+    }
+    H[0]=(H[0]+a)|0;H[1]=(H[1]+b)|0;H[2]=(H[2]+c)|0;H[3]=(H[3]+d)|0;
+    H[4]=(H[4]+e)|0;H[5]=(H[5]+f)|0;H[6]=(H[6]+g)|0;H[7]=(H[7]+h)|0;
+  }
+  return H.map(function(x){return ("00000000"+(x>>>0).toString(16)).slice(-8);}).join("");
+}
+function normKey(v){ return (v||"").trim().toUpperCase().replace(/\s+/g,""); }
+function keyHash(v){ return sha256(normKey(v)); }
+function users(){ try{return JSON.parse(localStorage.getItem("voiddlc_users")||"{}");}catch(e){return {};} }
+function saveUsers(u){ localStorage.setItem("voiddlc_users",JSON.stringify(u)); }
+function session(){ return localStorage.getItem("voiddlc_session"); }
+function hashPass(pass,salt){ var h=sha256(salt+":"+pass); for(var i=0;i<3000;i++) h=sha256(h+salt); return h; }
+function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+/* ===== вкладки (без решёток в адресе) ===== */
+document.querySelectorAll(".tab").forEach(function(t){
+  t.addEventListener("click", function(){
+    document.querySelectorAll(".tab").forEach(function(x){x.classList.remove("act");});
+    document.querySelectorAll(".pane").forEach(function(x){x.classList.remove("act");});
+    t.classList.add("act");
+    document.getElementById(t.getAttribute("data-t")).classList.add("act");
+  });
+});
+
+/* ===== аккаунт ===== */
+function pAccMsg(t,ok){ var o=document.getElementById("pAccOut"); o.textContent=t; o.className="msg "+(ok?"ok":"bad"); }
+function pRegister(){
+  var e=(document.getElementById("pEmail").value||"").trim().toLowerCase();
+  var p=document.getElementById("pPass").value||"";
+  if(!validEmail(e)) return pAccMsg("Введи настоящую почту",false);
+  if(p.length<4) return pAccMsg("Пароль минимум 4 символа",false);
+  var u=users();
+  if(u[e]) return pAccMsg("Аккаунт уже есть — нажми Войти",false);
+  var salt=Math.random().toString(36).slice(2)+Date.now().toString(36);
+  u[e]={salt:salt,hash:hashPass(p,salt),created:new Date().toISOString(),key:"",wallet:""};
+  saveUsers(u); localStorage.setItem("voiddlc_session",e);
+  pAccMsg("Аккаунт создан",true); pRefresh();
+}
+function pLogin(){
+  var e=(document.getElementById("pEmail").value||"").trim().toLowerCase();
+  var p=document.getElementById("pPass").value||"";
+  var u=users();
+  if(!u[e]) return pAccMsg("Аккаунт не найден",false);
+  if(u[e].hash!==hashPass(p,u[e].salt)) return pAccMsg("Неверный пароль",false);
+  localStorage.setItem("voiddlc_session",e);
+  pAccMsg("Вход выполнен",true); pRefresh();
+}
+function pLogout(){ localStorage.removeItem("voiddlc_session"); pAccMsg("Вышел",true); pRefresh(); }
+function pSaveWallet(){
+  var sess=session(); if(!sess) return;
+  var w=(document.getElementById("pWallet").value||"").trim();
+  if(!/^(UQ|EQ)[A-Za-z0-9_-]{46}$/.test(w)) return pWalletMsg("Адрес начинается с UQ… или EQ… (48 символов)",false);
+  var u=users(); u[sess].wallet=w; saveUsers(u);
+  pWalletMsg("Кошелёк привязан",true); pRefresh();
+}
+function pWalletMsg(t,ok){ var o=document.getElementById("pWalletOut"); o.textContent=t; o.className="msg "+(ok?"ok":"bad"); }
+
+/* ===== ключ ===== */
+var VOID_KEY_TYPES = {"1a92f87554f1808e1dc5bb5ad4a21e23fa8095888e52aa4aa32ca254f94d148a":"25 \u0434\u043d\u0435\u0439","a518442f956659297cbfae89940e31a27fb7f75fee327f64cab7c599a3d9003a":"25 \u0434\u043d\u0435\u0439","8b66050af9d619acb4cd293ba46c15bcb143e4ddfafec845e04ae70d5e92f776":"25 \u0434\u043d\u0435\u0439","ecdbdb47ef03dcd2c04a7e38c50667a8f6e0d6f16a643cffa4719c7634c5f00c":"25 \u0434\u043d\u0435\u0439","a335c91a9c3210c6456ef0998acf1a9d9f2a63adb443e5f80d8cd517d428073c":"25 \u0434\u043d\u0435\u0439","7ec2a03c4ad94cc7a401959b99a6a7661f2b0290f8dae6892723fb12cd5b2c1b":"25 \u0434\u043d\u0435\u0439","e3343941edbbf63ed7987a9c2cd4a4bbec445a7db3662736464d1c6838a4ac51":"25 \u0434\u043d\u0435\u0439","38b46424f2ad43bf79403592a65ac90eff7cb69dea8fb4e2530255410fd7076e":"25 \u0434\u043d\u0435\u0439","97606c565121a1a3cd218fdaa3ba9c5114721d05830c42d774c3aaf010d5e4c0":"25 \u0434\u043d\u0435\u0439","4d368a8c3c02ef153424d3070271c1e5d4700a25a851127ff4aa96db64d23c47":"25 \u0434\u043d\u0435\u0439","54c818200cbd5138b48d837e86453bdb9e30b8e204c5a00838ea86e93387900f":"25 \u0434\u043d\u0435\u0439","7c953e0dc6c21fde9b0c22485ae0828bc7dd29a0fc3454979e0f6129ef12f4f0":"25 \u0434\u043d\u0435\u0439","0c56618c5a93bc7d93d648584056230057f88877d449de9886c8dc3efb383b5a":"25 \u0434\u043d\u0435\u0439","4118ec38b7c597ed4e1d325c40485ea914f2a89437ecfb853e2d0e18e34665c6":"25 \u0434\u043d\u0435\u0439","7fe587e7e84fdd5382d5aeecd91970dafd08b4c99f5e9756f3351c33ccd323f9":"25 \u0434\u043d\u0435\u0439","0c0c7727371a03308fdf4f18e0e47f057d54099a0aa0ab1465c186ab1f7e763c":"25 \u0434\u043d\u0435\u0439","b441968b0f839499ec387328b7c5b60de843355703f50a592dfce5961a6fb01b":"25 \u0434\u043d\u0435\u0439","53b778b101f46d7609f1a2ac1f5cbb14c9df6b1b8b17b937a4e9c0272c09b15e":"25 \u0434\u043d\u0435\u0439","cef9a8e6fd216e5c2b9d6ed52afa90926d8ff0c9fb436d43f28c548db0bdb6ed":"25 \u0434\u043d\u0435\u0439","00d5266d6bcc3e87d2977e9ce72ba6bbd39f77611748a24587bef9fefcfae305":"25 \u0434\u043d\u0435\u0439","69124d94c69f6c994b9042d49e95e896cedb165746ec10566b0f76e49d9fa4be":"25 \u0434\u043d\u0435\u0439","d2683b1fbfd95a7bbe5ac77ec8b0af00842f13dddc9eaac043bbc598629d36ec":"25 \u0434\u043d\u0435\u0439","5bc33db64a62cfa7424d1fb17c200215f63ef3d4872816ce03e7d3dbb1fd909f":"25 \u0434\u043d\u0435\u0439","751bf2c83ec8db175a2625bb730c51e94975ebda94038a8cb952c7daf3df1edc":"25 \u0434\u043d\u0435\u0439","9a71e5bb1e032cb3570e15b1fa37dabbd1d2adcc8fabe51ac5dcb5819e88ee46":"25 \u0434\u043d\u0435\u0439","feea67b90a4219a4fff059ae150b88108145003e1a56690748fa4bbf2e38ec6e":"25 \u0434\u043d\u0435\u0439","996c9570e1e4deac7b15d90639c2524b26ea7eb42cd42130e29cef1761526cc7":"25 \u0434\u043d\u0435\u0439","40f348285bc38a74ee21ebf1c96e6d9a4566152d314f5b7f1791f1d55e573197":"25 \u0434\u043d\u0435\u0439","f5fc192dfa4cc6d9466964fe335c5aeb45a7edd79dfc2759d2267475ac311e7f":"25 \u0434\u043d\u0435\u0439","0cb7af7509fac7a80877aafd1f12410b076dfa77b4da6e588823f59d953997d7":"25 \u0434\u043d\u0435\u0439","268aec4d526fc90c6661f84ad70d335caad70612b10d402e2dd36b6a2fcf313c":"25 \u0434\u043d\u0435\u0439","0306a5c87cc0608a74cfbf5608d87f91f47ef1e72377089bddf11548810cd880":"25 \u0434\u043d\u0435\u0439","5b28836cc93b09685b2c204faace4e3626af34abd3719aa2f71d9cc98e03b7ac":"25 \u0434\u043d\u0435\u0439","e16f28142cbf69a56b82527b2e1ce3439c4da25370b91799dd509f1da7d0c9e7":"25 \u0434\u043d\u0435\u0439","c51209dfa0c5cc80a2bda8ab1a1d8e28970b0e58cfe0688551e4eb0c16a0f3b5":"25 \u0434\u043d\u0435\u0439","9c4747227de8089b20c68da9fefe17ebec0bd5f1643db70ad90b4a0eaa60eeb2":"25 \u0434\u043d\u0435\u0439","322b2e9ec3b0ee1749eda24e9c94ca090df6a19d1b7ebf667adbfaec01ec0428":"25 \u0434\u043d\u0435\u0439","572feffe0dc9702fa3a04ed5cb4bb35f5662937be6f18dec3eb9a4b21a4dfbbf":"25 \u0434\u043d\u0435\u0439","4484647e00092b72d508e2444b1dbf77171b6ec28bc72619598baa32a8c8675d":"25 \u0434\u043d\u0435\u0439","9ab6c8e02bee7b9efb8ba663e812af6ca980e9ac2a1d44e6054723ca3e54649b":"25 \u0434\u043d\u0435\u0439","20bc9b76615739ea7e9551a8df436d03e517da9ab6bae411859b3f367c4c1c70":"25 \u0434\u043d\u0435\u0439","97080ba006746ff0b586d9ee0c8b6bf9e312af407eb02a4e00359a56adbd9bfa":"25 \u0434\u043d\u0435\u0439","13d05b58b79b2f51a3cb4c3c416207056df578589f5749d8a57580fa8708392a":"25 \u0434\u043d\u0435\u0439","7bde353d62aaeeecb1b0e57ca5d390751913144d688fa5828217b8060a1a8bf4":"25 \u0434\u043d\u0435\u0439","3cc43897754a87a1d4033690d168d02a6c7c661fe88c6190e3302de1a26f84d4":"25 \u0434\u043d\u0435\u0439","fb0114d33a7f6987f61e6914fb9314bdf5da33f23fcc4302d29553417b630f24":"25 \u0434\u043d\u0435\u0439","ebee6618bdc3ef043175a8d2d759d30c6ba883b461bc939fe9c054a6b84b5e2b":"25 \u0434\u043d\u0435\u0439","5caf1e6843a08446638fb8c8cf3f4ecb535bd50b821abf5bc25c2db7d20778c3":"25 \u0434\u043d\u0435\u0439","82132d7e5f629f011c1e47ce0c998e1ee6e2775acf65274db9204026c8b7428c":"25 \u0434\u043d\u0435\u0439","ffdbd5ad083a6074bf5d578863f0b2b883149f4a1564eb98cd4d2e49b68c97cf":"25 \u0434\u043d\u0435\u0439","606b703d258de0a050c3f98bbda81d38c99d116f8c97de4e8a0d6a3f16f3cd1c":"25 \u0434\u043d\u0435\u0439","827fa2ef62c26bf4d0f85b40b61a23122404576bf7d595c17702f60bee65a2e9":"25 \u0434\u043d\u0435\u0439","0d8bc369c820bc3d72c0efdb3fe49c854f3642a7107674bb6daf324943acb9e3":"25 \u0434\u043d\u0435\u0439","e025c1920d78eb8b1d97ac3560c39f3ad587af3c1e5a1c044b6169a78ed0ee5f":"25 \u0434\u043d\u0435\u0439","287727dcc0ed870ccb261501ad3895eb607142cfa1d10980348444af34fe6339":"25 \u0434\u043d\u0435\u0439","7a86d052c7e6a1f8e23e6f01bdffd0a649035cbfb8c7c93ca5613a6a2c2f5d3b":"25 \u0434\u043d\u0435\u0439","ddb328b88eae5c99ccd232ef8190ec5ca75b65f31694846f1eab0918b2e53c6c":"25 \u0434\u043d\u0435\u0439","a6922aeb46303832c71445baadc3ef86feec39e4fc7c087e9728dbf5ac5f4051":"25 \u0434\u043d\u0435\u0439","85e1eb4bbcddd14bdf5fb4fad3dae6eff1a889e7aa30b64177c06488f7b40616":"25 \u0434\u043d\u0435\u0439","7f0d6e05c446885f0f53846bcfc762259f2e5f478a441494800b80f5573ade7e":"25 \u0434\u043d\u0435\u0439","f5a1dcabe5fbe055ca41b9165bd2f93b554f3d610320f3f9a341bea8029f25dc":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","d1278a05f6bf8b2b5f50e8cb0fe436a0a4eedc03b90a4ac29ad6733a25ff0126":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","40fdcdf9ba1bf4848e42061e1ab01b00dc32d9f01887e97685606de5e656639c":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","d49b29bcfc8b85d93a6d7772af744e4565aee8260377b656c127255789d14569":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","8310406c6acea6d8195959ba42aedb9e552f002998508e7904366178c58d5dee":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","c644cff0b8f36ee31a1585785177c62c5abb7d0a41363858a303c4eea4c2aaf3":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","1170324c3c13a424042ec2e232b5e2f84a0454e0bfbf086a14107f0795091a8c":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","558f502887ffcced531fe15373b0f47a2d70ee6eb8a8debd8e4c95214041093f":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","970b050629ca24ae825c7191249ba656b9f85817fa6409e78b22d3ecd9a19a04":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","89922f15d567b51421a8233189b8f36e5b811072ea2221c835f6f32492733fae":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","23745c19c502369cb66dc9a4710b441f5cbb2fd7dac9e4e86e239fe54040f392":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","8965a2cdc6461245feca240515c8869e6e90b67396bf4ae8314338d0fa655fef":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","ed28fed4262244ca3b71f501c8f035f6e44dc642ff210610950a1ff267566cee":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","2e230c226a295267b66d5da222d3645a0209c5c9d1a87c6336b5050e10656843":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","049617fbc7e55230591a4b43a223e7443298bfc28af083d529b945b904332527":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","29da77a43e545ad866e0f45b58a8f79c8ba58abfb6d8168413f357989266f1b1":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","ba056a35ecfd8ef6425fdbdf2af7a9694552bdffdd5a5efc2311b543f0f9733e":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","d4511784e20642131bbf0b06ff8b73b0ec20f2051a6ca37388cff79f4314eaca":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","74d6a1a9e50ba54cd2c8cda606fcf1795852e26127098eb4a8291fd1cb89c856":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","081966ca240ceaad93dada1e83d3e4856c468bae2681d05ba8329c2d346bfac4":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","1b94d1541e0f4b276c5ba3bdec5670f9362db8a186c0241711dc0bbadba79449":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","cd304748d7e382e841e52b4491a319607eee8101b66e7b807b2ad99c6b4e651e":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","6725e47ca7f9e7d0ef4b89571dacfdcfbe7ec7c7891cbb20cc5250eb4aae5e64":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","e0044df6e20d580ad1bd9e580ad2349f4b54f4935edcac50ca5562d7c6b01a5b":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","cd9fb622e234dc0f565b68494192be61d622361bcebb45fd8ed6dd4343b89b74":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","7bc7b67b44f4bf85affeb36cee6e9f64c3d83656c81d32e22051ac8fcd9cc010":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","aa6cb5612320ff183817764437ce5bdc055d04eb399915cde038ad39cf3d27ad":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","b1b1b5bf4cbbd191d715bb7c84b8710475a477c92c15821e2b94f22bd929aa85":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","e3ac2f59bbef079ac3c2628ec1b1a808cfe8892c38a27fce5dd492fb1a7e52d1":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","187b83966ccc2b5c8f807b557231c0d9711650346499bba6b47e18cb21a9f689":"\u043d\u0430\u0432\u0441\u0435\u0433\u0434\u0430","6d43fd47dd309fb0f62b2506ac39c38b8c6527e1b4fd121777ee830230eb646a":"40 \u0434\u043d\u0435\u0439","2bcaceb91e2e6412bb537817cd29757f3755159f94456faf0e1650be24e1c9be":"40 \u0434\u043d\u0435\u0439","29c4485c8f726a09936a8b0f7180bec542a3ff79c96b97c7f041e134441cfbc7":"40 \u0434\u043d\u0435\u0439","eda2d0b9fb9554a335a14d78c20401d1a2c9b595c8a819aaaac136065a917c80":"40 \u0434\u043d\u0435\u0439","8f2201760dfc34fe8669592ec534a70504bd739dcf507fedfe6fb87ff3dd1bc4":"40 \u0434\u043d\u0435\u0439","54e92338052a7796d47b21e5f8306dc59a0839e6f7d296ea16036e11e328beac":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","21e6c6137fefdf9c97e39a26e4fa6fe0aeaca930e88ece29538122b5af6cd706":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","c3490ac97db64d9a4fd0b65782c6526094e49a6917c6cb9b6c76a9e7a22c5888":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","14b6f965c84f5dae7381f93be96669ff65a5611b0181ff5a13c020f2ab9f06e2":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","d9f5654c2e0619a3fa815002c3d6b38d9d85a6e2a02e0d91a11b443c8bdd5d0e":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","3bc26b3f9f70c34bd1c62bd37b586881c79b6a99bea0e0544ded69a2e0606683":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","21b2de7ace130cd83e6e053e0ad3940ce24344c804b99b2d688a5417800aa667":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","ea34a7b981d046b2f88e2395401573cd99fcc3a6a73b2946d37621a45fab95a4":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","164b09813886b9640c428f7e151b4bcdc14b6704d09e1720284cbcfef18b3f44":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","4d159643314817eb989ccd7a8fc0eafbb118ff8fd2dabfffd6b65aad5e806be6":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","79925e996ce10d50daf5b3e9beb3529ee96b17c5e8d7e995422ee57a33d484fa":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","892a10c28a030bc37904b7dd257db170e7019b7b81adc69bff3c07c973b94509":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","00f39542e9590b87a73e94921aed0555f1bb339434150cba340b58e6e2ad15b8":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","d6ab7143deb938726e13f5d30029f207ba661821a655355724b617b1bab50e92":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","1f112a679ec194b760698124862edc5b4a2e3978228d47df0a23836d12224dc8":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","0b1d50777f96998dff9a53bd239f219f3e9f107cd2dc06b24477e28373f3292e":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","15e03804817d6a1005084c92b4526c7f0060fdc635c81238261a6e0eee1f3dfa":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","0a108e7c81fe9da82eb1b60e0fcf90bba7185f32855398e3f6cd37c97f1cf54a":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","82fcd5af78d6a52cf2c9a437067bf249350f544ac141ad2d6ef8477e5e186fd6":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","f5c14064dbe1cf3d93efd176404790c531b98b6047c1c653aca8d0f743d4175c":"1 \u0434\u0435\u043d\u044c (\u043a\u0440\u0443\u0442\u0435\u043b\u043a\u0430)","1a7b20ac499389fa68f391e741ce2a40e3ee4f8025bc06a59b4cf3ae83a176eb":"\u0437\u0430\u043c\u043e\u0440\u043e\u0437\u043a\u0430 \u043f\u043e\u0434\u043f\u0438\u0441\u043a\u0438","e7525ce5f6fcd75944e165775e56fb0a2989bad00c28718c35a13e307bffa4c8":"\u0437\u0430\u043c\u043e\u0440\u043e\u0437\u043a\u0430 \u043f\u043e\u0434\u043f\u0438\u0441\u043a\u0438","38f2950d2f820d375b205f474e2e604327201af1630fab6116adc35157c28801":"\u0437\u0430\u043c\u043e\u0440\u043e\u0437\u043a\u0430 \u043f\u043e\u0434\u043f\u0438\u0441\u043a\u0438","281c62c4ab1afa373783da2bd7a1bab5179595c904cefa23bd7faf1277b1b309":"\u0437\u0430\u043c\u043e\u0440\u043e\u0437\u043a\u0430 \u043f\u043e\u0434\u043f\u0438\u0441\u043a\u0438","e879efdeed2563a1d246629addb33cc36ae3c7f4c1163bdd96fe8df4abf7b5b2":"\u0437\u0430\u043c\u043e\u0440\u043e\u0437\u043a\u0430 \u043f\u043e\u0434\u043f\u0438\u0441\u043a\u0438","0347d873836662bec59e64462ece739b34abe1bf8bd31f20520307071a70bc74":"\u0437\u0430\u043c\u043e\u0440\u043e\u0437\u043a\u0430 \u043f\u043e\u0434\u043f\u0438\u0441\u043a\u0438","18483099fd1cd8a09740c81bf228cbda21b8821edadfafa198dbb33aa979dd4f":"\u0437\u0430\u043c\u043e\u0440\u043e\u0437\u043a\u0430 \u043f\u043e\u0434\u043f\u0438\u0441\u043a\u0438","16059482a471e5037060e6f230bda69a1eb0fc39c541f92b62d2adf03cfeb77a":"\u0437\u0430\u043c\u043e\u0440\u043e\u0437\u043a\u0430 \u043f\u043e\u0434\u043f\u0438\u0441\u043a\u0438","d507e9d4caf0a42ed5eb8be711abaebeb5878f68b5a2309c42eaeab42fa52ca7":"\u0437\u0430\u043c\u043e\u0440\u043e\u0437\u043a\u0430 \u043f\u043e\u0434\u043f\u0438\u0441\u043a\u0438","801d360f9d187702a0a1715095f06ad05b62444ef21e26bac0790e9ce24d2258":"\u0437\u0430\u043c\u043e\u0440\u043e\u0437\u043a\u0430 \u043f\u043e\u0434\u043f\u0438\u0441\u043a\u0438"};
+function pCheckKey(){
+  var v=normKey(document.getElementById("pKeyIn").value);
+  var out=document.getElementById("pKeyOut");
+  if(!/^VOID(-[A-Z0-9]{4}){3}$/.test(v)){ out.textContent="Формат: VOID-XXXX-XXXX-XXXX"; out.className="msg bad"; return; }
+  var type=VOID_KEY_TYPES[keyHash(v)];
+  if(type){
+    out.innerHTML="<b style='color:var(--on)'>Подлинный ключ</b> · тип: <b>"+type+"</b>. Вводи его в моде: Right Shift → активация.";
+    out.className="msg ok";
+  }else{
+    out.innerHTML="Такого ключа нет в выданных партиях. Проверь символы или напиши продавцу.";
+    out.className="msg bad";
+  }
+}
+function pSaveKey(){
+  var sess=session(); if(!sess){ document.getElementById("pKeyOut").textContent="Сначала войди в аккаунт (вкладка Аккаунт)"; return; }
+  var k=normKey(document.getElementById("pKeyIn").value);
+  if(!/^VOID(-[A-Z0-9]{4}){3}$/.test(k)){ document.getElementById("pKeyOut").textContent="Формат: VOID-XXXX-XXXX-XXXX"; return; }
+  var u=users(); u[sess].key=k; saveUsers(u);
+  document.getElementById("pKeyOut").textContent="Ключ сохранён в аккаунт";
+  pRefresh();
+}
+
+/* ===== заказы ===== */
+function pOrders(){
+  var sess=session(); if(!sess) return [];
+  var all=[]; try{ all=JSON.parse(localStorage.getItem("voiddlc_orders")||"[]"); }catch(e){}
+  return all.filter(function(o){ return o.email===sess; });
+}
+function pRefresh(){
+  var sess=session();
+  var prof=document.getElementById("pProfile");
+  if(sess&&users()[sess]){
+    var u=users()[sess];
+    prof.style.display="block";
+    document.getElementById("pvEmail").textContent=sess;
+    document.getElementById("pvKey").innerHTML=u.key?"<code>"+u.key+"</code>":"<span class='dim'>нет — активируй в моде или вставь во вкладке «Мой ключ»</span>";
+    document.getElementById("pvWallet").innerHTML=u.wallet?"<code>"+u.wallet+"</code>":"<span class='dim'>не привязан</span>";
+    document.getElementById("pWallet").value=u.wallet||"";
+    document.getElementById("pEmail").value=sess;
+  } else {
+    prof.style.display="none";
+  }
+  var list=document.getElementById("pOrderList"), mine=pOrders();
+  list.innerHTML="";
+  document.getElementById("pNoOrders").style.display=mine.length?"none":"block";
+  mine.forEach(function(o){
+    var d=document.createElement("div"); d.className="order";
+    d.innerHTML="<b>"+o.id+"</b><span>"+(o.tierName||o.tier)+"</span><span>"+(o.usd?o.usd+"$":"")+"</span><span class='dim'>"+new Date(o.ts).toLocaleString()+"</span>";
+    list.appendChild(d);
+  });
+}
+pRefresh();
+</script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3f16f909fe506e9',t:'MTc5MDA4MTQzMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
